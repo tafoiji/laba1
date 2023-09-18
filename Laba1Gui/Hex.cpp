@@ -17,9 +17,11 @@ void Hex::toRGB(RGB* rgb)
     rgb->first = trans[hex[1]] * 16 + trans[hex[2]];
     rgb->second = trans[hex[3]] * 16 + trans[hex[4]];
     rgb->third = trans[hex[5]] * 16 + trans[hex[6]];
-    rgb->f->setText(QString::number(rgb->first));
-    rgb->s->setText(QString::number(rgb->second));
-    rgb->t->setText(QString::number(rgb->third));
+    rgb->blockSignals(true);
+    rgb->f->setValue(rgb->first);
+    rgb->s->setValue(rgb->second);
+    rgb->t->setValue(rgb->third);
+    rgb->blockSignals(false);
 }
 
 void Hex::toCMYK(CMYK* cmyk)
@@ -51,10 +53,14 @@ void Hex::toCMYK(CMYK* cmyk)
     }
 
     cmyk->key *= 100;
-    cmyk->f->setText(QString::number(cmyk->first));
-    cmyk->s->setText(QString::number(cmyk->second));
-    cmyk->t->setText(QString::number(cmyk->third));
-    cmyk->k->setText(QString::number(cmyk->key));
+    cmyk->blockSignals(true);
+    cmyk->f->setValue(cmyk->first);
+    cmyk->s->setValue(cmyk->second);
+    cmyk->t->setValue(cmyk->third);
+    cmyk->blockSignals(false);
+    cmyk->k->blockSignals(true);
+    cmyk->k->setValue(cmyk->key);
+    cmyk->k->blockSignals(false);
 }
 
 void Hex::toXYZ(XYZ* xyz)

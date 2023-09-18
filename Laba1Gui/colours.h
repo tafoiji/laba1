@@ -37,6 +37,8 @@ public:
 
     RGB& operator= (const RGB& op);
 
+    void chekcUndo();
+
     ~RGB();
 };
 
@@ -46,7 +48,7 @@ class CMYK : public BasicColor
 private:
     friend class Hex;
     double key;
-    QLineEdit* k;
+    QDoubleSpinBox* k;
     QLabel* kLabel;
 public:
     CMYK(QWidget* parent, double cyan = 0, double magenta = 0,
@@ -64,10 +66,12 @@ public:
     HSV toHSV()const;
     HSL toHSL()const;
 
+    void chekcUndo();
+
     ~CMYK();
 
 public slots:
-    void editedK();
+    void editedK(double);
 };
 
 class XYZ : public BasicColor
@@ -87,6 +91,8 @@ public:
     Lab toLab()const;
     HSV toHSV()const;
     HSL toHSL()const;
+
+    void chekcUndo();
 
     XYZ& operator= (const XYZ& op);
 
@@ -113,6 +119,9 @@ public:
 
     Lab& operator= (const Lab& op);
 
+
+    void chekcUndo();
+
     ~Lab();
 };
 
@@ -133,6 +142,8 @@ public:
 
     HSV& operator= (const HSV& op);
 
+    void chekcUndo();
+
     ~HSV();
 };
 
@@ -150,6 +161,8 @@ public:
     XYZ toXYZ()const;
     Lab toLab()const;
     HSV toHSV()const;
+
+    void chekcUndo();
 
     HSL& operator= (const HSL& op);
 

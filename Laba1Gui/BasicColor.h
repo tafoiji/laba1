@@ -6,12 +6,15 @@
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QLabel>
+#include "QDoubleSpinBox"
 
 class BasicColor : public QWidget
 {
     Q_OBJECT
 protected:
     friend class Hex;
+
+    void blockSignals(bool b);
 
     double first;
     double second;
@@ -21,9 +24,9 @@ protected:
 
     virtual QString toHex() = 0;
 
-    QLineEdit* f;
-    QLineEdit* s;
-    QLineEdit* t;
+    QDoubleSpinBox* f;
+    QDoubleSpinBox* s;
+    QDoubleSpinBox* t;
     QLabel* fLabel;
     QLabel* sLabel;
     QLabel* tLabel;
@@ -34,9 +37,9 @@ public:
 
     BasicColor& operator=(const BasicColor& op);
 public slots:
-    void editedF();
-    void editedS();
-    void editedT();
+    void editedF(double);
+    void editedS(double);
+    void editedT(double);
 signals:
     void edited();
 };

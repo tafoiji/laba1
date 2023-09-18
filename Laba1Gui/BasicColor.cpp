@@ -10,12 +10,21 @@ BasicColor::BasicColor(QWidget* parent, double first, double second, double thir
     fLabel = new QLabel("R: ", this);
     sLabel = new QLabel("G: ", this);
     tLabel = new QLabel("B: ", this);
-    f = new QLineEdit(QString::number(first), this);
-    s = new QLineEdit(QString::number(second), this);
-    t = new QLineEdit(QString::number(third), this);
-    connect(f, &QLineEdit::textEdited, this, &BasicColor::editedF);
-    connect(s, &QLineEdit::textEdited, this, &BasicColor::editedS);
-    connect(t, &QLineEdit::textEdited, this, &BasicColor::editedT);
+
+    f = new QDoubleSpinBox(this);
+    s = new QDoubleSpinBox(this);
+    t = new QDoubleSpinBox(this);
+    blockSignals(true);
+    f->setValue(first);
+    s->setValue(second);
+    t->setValue(third);
+    blockSignals(false);
+    //connect(f, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged)
+    //        ,this, editedF());
+    connect(f, SIGNAL(valueChanged(double)), this, SLOT(editedF(double)));
+    connect(s, SIGNAL(valueChanged(double)), this, SLOT(editedS(double)));
+    connect(t, SIGNAL(valueChanged(double)), this, SLOT(editedT(double)));
+    //connect(t, &QDoubleSpinBox::valueChanged, this, &BasicColor::editedT);
     fLayout->addWidget(fLabel);
     fLayout->addWidget(f);
     sLayout->addWidget(sLabel);
@@ -31,6 +40,13 @@ BasicColor::BasicColor(QWidget* parent, double first, double second, double thir
              {11, 'b'}, {12, 'c'}, {13, 'd'}, {14, 'e'}, {15, 'f'} };
 }
 
+void BasicColor::blockSignals(bool b)
+{
+    f->blockSignals(b);
+    s->blockSignals(b);
+    t->blockSignals(b);
+}
+
 BasicColor::~BasicColor() {}
 
 BasicColor& BasicColor::operator=(const BasicColor& op)
@@ -41,54 +57,52 @@ BasicColor& BasicColor::operator=(const BasicColor& op)
     fLabel->setText((op.fLabel)->text());
     sLabel->setText((op.sLabel)->text());
     tLabel->setText((op.tLabel)->text());
-    f->setText(QString::number(op.first));
-    s->setText(QString::number(op.second));
-    t->setText(QString::number(op.third));
+    blockSignals(true);
+    f->setValue(op.first);
+    s->setValue(op.second);
+    t->setValue(op.third);
+    blockSignals(false);
 
     return *this;
 }
 
-void BasicColor::editedS()
+void BasicColor::editedS(double)
 {
     bool ok;
-    double temp = (s->text()).toDouble(&ok);
-    if (!ok)
+    double temp = s->value();
+    if (temp == second)
     {
-        //TO DO: Обработать MESSAGE
+        return;
     }
-    else
-    {
-        second = temp;
-        emit edited();
-    }
+
+    second = temp;
+    emit edited();
 }
 
-void BasicColor::editedT()
+void BasicColor::editedT(double)
 {
     bool ok;
-    double temp = (t->text()).toDouble(&ok);
-    if (!ok)
+    double temp = t->value();
+    if (temp == third)
     {
-        //TO DO: Обработать MESSAGE
+        return;
     }
-    else
-    {
-        third = temp;
-        emit edited();
-    }
+
+
+
+    third = temp;
+    emit edited();
 }
 
-void BasicColor::editedF()
+void BasicColor::editedF(double)
 {
     bool ok;
-    double temp = (f->text()).toDouble(&ok);
-    if (!ok)
+    double temp = f->value();
+    if (f->value() == first)
     {
-        //TO DO: Обработать MESSAGE
+        return;
     }
-    else
-    {
-        first = temp;
-        emit edited();
-    }
+
+    first = temp;
+    emit edited();
 }

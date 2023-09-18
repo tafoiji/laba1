@@ -2,24 +2,30 @@
 #include <fstream>
 
 Laba1Gui::Laba1Gui(QWidget* parent)
-    : QMainWindow(parent), hex(new QLineEdit("#000000", this)), ui(new Ui::Laba1Gui),
-    rgb(new RGB(nullptr)), cmyk(new CMYK(nullptr)), xyz(new XYZ(nullptr)), lab(new Lab(nullptr)),
-    hsv(new HSV(nullptr)), hsl(new HSL(nullptr))
+    : QMainWindow(parent), hex(new QLineEdit("#000000", this)), ui(new Ui::Laba1Gui)
 {
     ui->setupUi(this);
 
-    this->setFixedSize(720, 480);
+    this->setFixedSize(720, 440);
 
     QWidget* mainWidget = new QWidget;
     layout = new QVBoxLayout(mainWidget);
     QPushButton* chooseClr = new QPushButton("Choose color", this);
     connect(chooseClr, SIGNAL(clicked()), SLOT(openColorDialog()));
     chooseClr->setFixedSize(this->width() / 2, this->height() * 0.3);
+    layout->addStretch();
     layout->addWidget(chooseClr);
 
     QLabel* hexLabel = new QLabel("HEX:", this);
     hex->setFixedWidth(this->width() / 2);
     connect(hex, &QLineEdit::textEdited, this, &Laba1Gui::changeNow);
+
+    rgb = new RGB(mainWidget);
+    cmyk = new CMYK(mainWidget);
+    xyz = new XYZ(mainWidget);
+    lab = new Lab(mainWidget);
+    hsv = new HSV(mainWidget);
+    hsl = new HSL(mainWidget);
     Hex temp(hex->text());
     temp.toRGB(rgb);
     temp.toCMYK(cmyk);
@@ -69,6 +75,22 @@ void Laba1Gui::paintEvent(QPaintEvent* e)
 
 void Laba1Gui::changeNow()
 {
+    if (hex->text()[0] != '#')
+    {
+        hex->undo();
+        return;
+    }
+
+    for (int i = 1; i < hex->text().size();i++)
+    {
+        QChar item = hex->text()[i];
+        if (!item.isDigit() && !(item>='a' &&item<='f'))
+        {
+            hex->undo();
+            return;
+        }
+    }
+
     changeColors(nullptr);
     this->update();
 }
@@ -145,6 +167,7 @@ void Laba1Gui::changeColors(BasicColor* bc)
     }
     else if (dynamic_cast<RGB*>(bc) != nullptr)
     {
+        rgb->chekcUndo();
         hex->setText(rgb->toHex());
         *cmyk = rgb->toCMYK();
         *xyz = rgb->toXYZ();
@@ -154,6 +177,7 @@ void Laba1Gui::changeColors(BasicColor* bc)
     }
     else if (dynamic_cast<CMYK*>(bc) != nullptr)
     {
+        cmyk->chekcUndo();
         hex->setText(cmyk->toHex());
         *rgb = cmyk->toRGB();
         *xyz = cmyk->toXYZ();
@@ -163,6 +187,7 @@ void Laba1Gui::changeColors(BasicColor* bc)
     }
     else if (dynamic_cast<XYZ*>(bc) != nullptr)
     {
+        xyz->chekcUndo();
         hex->setText(xyz->toHex());
         *rgb = xyz->toRGB();
         *cmyk = xyz->toCMYK();
@@ -172,6 +197,7 @@ void Laba1Gui::changeColors(BasicColor* bc)
     }
     else if (dynamic_cast<Lab*>(bc) != nullptr)
     {
+        lab->chekcUndo();
         hex->setText(lab->toHex());
         *rgb = lab->toRGB();
         *cmyk = lab->toCMYK();
@@ -181,6 +207,7 @@ void Laba1Gui::changeColors(BasicColor* bc)
     }
     else if (dynamic_cast<HSV*>(bc) != nullptr)
     {
+        hsv->chekcUndo();
         hex->setText(hsv->toHex());
         *rgb = hsv->toRGB();
         *cmyk = hsv->toCMYK();
@@ -190,6 +217,7 @@ void Laba1Gui::changeColors(BasicColor* bc)
     }
     else if (dynamic_cast<HSL*>(bc) != nullptr)
     {
+        hsl->chekcUndo();
         hex->setText(hsl->toHex());
         *rgb = hsl->toRGB();
         *cmyk = hsl->toCMYK();

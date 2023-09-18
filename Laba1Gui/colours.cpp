@@ -19,6 +19,13 @@ RGB::RGB(QWidget* parent, int red, int green, int blue) :
     this->fLabel->setText("R: ");
     this->sLabel->setText("G: ");
     this->tLabel->setText("B: ");
+
+    this->f->setMinimum(0);
+    this->s->setMinimum(0);
+    this->t->setMinimum(0);
+    this->f->setMaximum(255);
+    this->s->setMaximum(255);
+    this->t->setMaximum(255);
 }
 
 RGB::RGB(const RGB& op)
@@ -117,6 +124,7 @@ HSV RGB::toHSV()const
     {
         hue = (first / 255 - second / 255) / delta + 4;
     }
+
     hue *= 60;
     if (hue < 0)
     {
@@ -167,6 +175,21 @@ HSL RGB::toHSL()const
     return HSL(nullptr, h, s, l);
 }
 
+void RGB::chekcUndo()
+{
+    if (0. > first || 255. < first)
+    {
+        //f->undo();
+    }
+    else if (0. > second || 255. < second)
+    {
+        //s->undo();
+    }
+    else if (0. > third || 255. < third)
+    {
+        //t->undo();
+    }
+}
 
 RGB::~RGB() {}
 
@@ -179,12 +202,26 @@ CMYK::CMYK(QWidget* parent, double cyan, double magenta,
     this->tLabel->setText("Y: ");
 
     kLabel = new QLabel("K: ");
-    k = new QLineEdit(QString::number(key));
+    k = new QDoubleSpinBox(this);
+    k->blockSignals(true);
+    k->setValue(key);
+    k->blockSignals(false);
     QHBoxLayout* kLayout = new QHBoxLayout(this);
     kLayout->addWidget(kLabel);
     kLayout->addWidget(k);
     layout->addLayout(kLayout);
-    connect(k, &QLineEdit::textEdited, this, &CMYK::editedK);
+
+    this->f->setMinimum(0);
+    this->s->setMinimum(0);
+    this->t->setMinimum(0);
+    this->f->setMaximum(100);
+    this->s->setMaximum(100);
+    this->t->setMaximum(100);
+    this->k->setMinimum(0);
+    this->k->setMaximum(100);
+
+    connect(k, SIGNAL(valueChanged(double)), this, SLOT(editedK(double)));
+    //connect(k, &QDoubleSpinBox::valueChanged, this, &CMYK::editedK);
 }
 
 CMYK::CMYK(const CMYK& op)
@@ -254,23 +291,44 @@ CMYK& CMYK::operator= (const CMYK& op)
     (BasicColor&)*this = (const BasicColor&)op;
     key = op.key;
     kLabel = op.kLabel;
-    k->setText(QString::number(op.key));
+    k->blockSignals(true);
+    k->setValue(op.key);
+    k->blockSignals(false);
 
     return *this;
 }
 
-void CMYK::editedK()
+void CMYK::editedK(double)
 {
     bool ok;
-    int temp = (k->text()).toDouble(&ok);
-    if (!ok)
+    int temp = k->value();
+    if (temp==key)
     {
-        //TO DO: Обработать MESSAGE
+        return;
     }
-    else
+
+
+    key = temp;
+    emit edited();
+}
+
+void CMYK::chekcUndo()
+{
+    if (0. > first || 100. < first)
     {
-        key = temp;
-        emit edited();
+        //f->undo();
+    }
+    else if (0. > second || 100. < second)
+    {
+        //s->undo();
+    }
+    else if (0. > third || 100. < third)
+    {
+        //t->undo();
+    }
+    else if (0. > key || 100. < key)
+    {
+        //k->undo();
     }
 }
 
@@ -282,6 +340,13 @@ XYZ::XYZ(QWidget* parent, double x, double y, double z) :
     this->fLabel->setText("X: ");
     this->sLabel->setText("Y: ");
     this->tLabel->setText("Z: ");
+
+    this->f->setMinimum(0);
+    this->s->setMinimum(0);
+    this->t->setMinimum(0);
+    this->f->setMaximum(95.047);
+    this->s->setMaximum(100);
+    this->t->setMaximum(108.883);
 }
 
 XYZ::XYZ(const XYZ& op)
@@ -384,6 +449,22 @@ HSL XYZ::toHSL()const
     return toRGB().toHSL();
 }
 
+void XYZ::chekcUndo()
+{
+    if (0. > first || 95.047 < first)
+    {
+        //f->undo();
+    }
+    else if (0. > second || 100. < second)
+    {
+        //s->undo();
+    }
+    else if (0. > third || 108.883 < third)
+    {
+        //t->undo();
+    }
+}
+
 XYZ::~XYZ() {}
 
 Lab::Lab(QWidget* parent, double L, double a, double b) :
@@ -392,6 +473,13 @@ Lab::Lab(QWidget* parent, double L, double a, double b) :
     this->fLabel->setText("L: ");
     this->sLabel->setText("a: ");
     this->tLabel->setText("b: ");
+
+    this->f->setMinimum(0);
+    this->s->setMinimum(-128);
+    this->t->setMinimum(-128);
+    this->f->setMaximum(100);
+    this->s->setMaximum(128);
+    this->t->setMaximum(128);
 }
 
 Lab::Lab(const Lab& op)
@@ -453,7 +541,25 @@ HSL Lab::toHSL()const
     return toXYZ().toHSL();
 }
 
+
+
 Lab::~Lab() {};
+
+void Lab::chekcUndo()
+{
+    if (0. > first || 100. < first)
+    {
+        //f->undo();
+    }
+    else if (-128. > second || 128. < second)
+    {
+        //s->undo();
+    }
+    else if (-128. > third || 128. < third)
+    {
+        //t->undo();
+    }
+}
 
 HSV::HSV(QWidget* parent, double hue, double s, double v) :
     BasicColor(parent, hue, s, v)
@@ -461,6 +567,13 @@ HSV::HSV(QWidget* parent, double hue, double s, double v) :
     this->fLabel->setText("H: ");
     this->sLabel->setText("S: ");
     this->tLabel->setText("V: ");
+
+    this->f->setMinimum(0);
+    this->s->setMinimum(0);
+    this->t->setMinimum(0);
+    this->f->setMaximum(359.99);
+    this->s->setMaximum(100);
+    this->t->setMaximum(100);
 }
 
 HSV::HSV(const HSV& op)
@@ -550,12 +663,35 @@ HSL HSV::toHSL()const
 
 HSV::~HSV() {}
 
+void HSV::chekcUndo()
+{
+    if (0. > first || 360 <= first)
+    {
+        //f->undo();
+    }
+    else if (0. > second || 100. < second)
+    {
+        //s->undo();
+    }
+    else if (0. > third || 100. < third)
+    {
+        //t->undo();
+    }
+}
+
 HSL::HSL(QWidget* parent, double h, double s, double l) :
     BasicColor(parent, h, s, l)
 {
     this->fLabel->setText("H: ");
     this->sLabel->setText("S: ");
     this->tLabel->setText("L: ");
+
+    this->f->setMinimum(0);
+    this->s->setMinimum(0);
+    this->t->setMinimum(0);
+    this->f->setMaximum(359.99);
+    this->s->setMaximum(100);
+    this->t->setMaximum(100);
 }
 
 HSL::HSL(const HSL& op)
@@ -641,6 +777,22 @@ HSV HSL::toHSV()const
 {
 
     return toRGB().toHSV();
+}
+
+void HSL::chekcUndo()
+{
+    if (0. > first || 360 <= first)
+    {
+        //f->undo();
+    }
+    else if (0. > second || 100. < second)
+    {
+        //s->undo();
+    }
+    else if (0. > third || 100. < third)
+    {
+        //t->undo();
+    }
 }
 
 HSL::~HSL() {}
