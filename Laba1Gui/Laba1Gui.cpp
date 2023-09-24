@@ -75,16 +75,23 @@ void Laba1Gui::paintEvent(QPaintEvent* e)
 
 void Laba1Gui::changeNow()
 {
-    if (hex->text()[0] != '#')
+    QString str = hex->text();
+    if (str.size() > 7)
     {
         hex->undo();
         return;
     }
 
-    for (int i = 1; i < hex->text().size();i++)
+    if (str[0] != '#')
     {
-        QChar item = hex->text()[i];
-        if (!item.isDigit() && !(item>='a' &&item<='f'))
+        hex->undo();
+        return;
+    }
+
+    for (int i = 1; i < str.size();i++)
+    {
+        QChar item = str[i];
+        if (!item.isDigit() && !(item >= 'a' &&item <= 'f'))
         {
             hex->undo();
             return;
@@ -177,7 +184,6 @@ void Laba1Gui::changeColors(BasicColor* bc)
     }
     else if (dynamic_cast<CMYK*>(bc) != nullptr)
     {
-        cmyk->chekcUndo();
         hex->setText(cmyk->toHex());
         *rgb = cmyk->toRGB();
         *xyz = cmyk->toXYZ();
@@ -187,7 +193,6 @@ void Laba1Gui::changeColors(BasicColor* bc)
     }
     else if (dynamic_cast<XYZ*>(bc) != nullptr)
     {
-        xyz->chekcUndo();
         hex->setText(xyz->toHex());
         *rgb = xyz->toRGB();
         *cmyk = xyz->toCMYK();
@@ -197,7 +202,6 @@ void Laba1Gui::changeColors(BasicColor* bc)
     }
     else if (dynamic_cast<Lab*>(bc) != nullptr)
     {
-        lab->chekcUndo();
         hex->setText(lab->toHex());
         *rgb = lab->toRGB();
         *cmyk = lab->toCMYK();
@@ -207,7 +211,6 @@ void Laba1Gui::changeColors(BasicColor* bc)
     }
     else if (dynamic_cast<HSV*>(bc) != nullptr)
     {
-        hsv->chekcUndo();
         hex->setText(hsv->toHex());
         *rgb = hsv->toRGB();
         *cmyk = hsv->toCMYK();
@@ -217,7 +220,6 @@ void Laba1Gui::changeColors(BasicColor* bc)
     }
     else if (dynamic_cast<HSL*>(bc) != nullptr)
     {
-        hsl->chekcUndo();
         hex->setText(hsl->toHex());
         *rgb = hsl->toRGB();
         *cmyk = hsl->toCMYK();

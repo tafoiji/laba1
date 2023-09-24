@@ -66,8 +66,6 @@ public:
     HSV toHSV()const;
     HSL toHSL()const;
 
-    void chekcUndo();
-
     ~CMYK();
 
 public slots:
@@ -91,8 +89,6 @@ public:
     Lab toLab()const;
     HSV toHSV()const;
     HSL toHSL()const;
-
-    void chekcUndo();
 
     XYZ& operator= (const XYZ& op);
 
@@ -119,9 +115,6 @@ public:
 
     Lab& operator= (const Lab& op);
 
-
-    void chekcUndo();
-
     ~Lab();
 };
 
@@ -142,8 +135,6 @@ public:
 
     HSV& operator= (const HSV& op);
 
-    void chekcUndo();
-
     ~HSV();
 };
 
@@ -161,8 +152,6 @@ public:
     XYZ toXYZ()const;
     Lab toLab()const;
     HSV toHSV()const;
-
-    void chekcUndo();
 
     HSL& operator= (const HSL& op);
 

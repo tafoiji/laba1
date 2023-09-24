@@ -120,7 +120,7 @@ HSV RGB::toHSV()const
     {
         hue = (third/255 - first/255) / delta + 2;
     }
-    else if (CMax == third / 255)
+    else
     {
         hue = (first / 255 - second / 255) / delta + 4;
     }
@@ -177,17 +177,25 @@ HSL RGB::toHSL()const
 
 void RGB::chekcUndo()
 {
-    if (0. > first || 255. < first)
+    if (f->value() != (double)(int)f->value())
     {
-        //f->undo();
+        f->blockSignals(true);
+        f->setValue((double)(int)f->value());
+        f->blockSignals(false);
     }
-    else if (0. > second || 255. < second)
+
+    if (s->value() != (double)(int)s->value())
     {
-        //s->undo();
+        s->blockSignals(true);
+        s->setValue((double)(int)s->value());
+        s->blockSignals(false);
     }
-    else if (0. > third || 255. < third)
+
+    if (t->value() != (double)(int)t->value())
     {
-        //t->undo();
+        t->blockSignals(true);
+        t->setValue((double)(int)t->value());
+        t->blockSignals(false);
     }
 }
 
@@ -244,9 +252,9 @@ QString CMYK::toHex()
 
 RGB CMYK::toRGB()const
 {
-    int r = (int)255 * (1. - first/100) * (1. - key/100);
-    int g = (int)255 * (1. - second/100) * (1. - key/100);
-    int b = (int)255 * (1. - third/100) * (1. - key/100);
+    int r = round(255 * (1. - first/100) * (1. - key/100));
+    int g = round(255 * (1. - second/100) * (1. - key/100));
+    int b = round(255 * (1. - third/100) * (1. - key/100));
     return RGB(nullptr, r, g, b);
 }
 
@@ -300,36 +308,14 @@ CMYK& CMYK::operator= (const CMYK& op)
 
 void CMYK::editedK(double)
 {
-    bool ok;
     int temp = k->value();
     if (temp==key)
     {
         return;
     }
 
-
     key = temp;
     emit edited();
-}
-
-void CMYK::chekcUndo()
-{
-    if (0. > first || 100. < first)
-    {
-        //f->undo();
-    }
-    else if (0. > second || 100. < second)
-    {
-        //s->undo();
-    }
-    else if (0. > third || 100. < third)
-    {
-        //t->undo();
-    }
-    else if (0. > key || 100. < key)
-    {
-        //k->undo();
-    }
 }
 
 CMYK::~CMYK() {}
@@ -394,32 +380,37 @@ RGB XYZ::toRGB()const
     {
         Rn = 1;
     }
+
     if (Rn < 0)
     {
         Rn = 0;
     }
+
     double Gn = -0.9689 * first / 100 + 1.8758 * second / 100 + 0.0415 * third / 100;
     Gn = FRGB(Gn);
     if (Gn > 1)
     {
         Gn = 1;
     }
+
     if (Gn < 0)
     {
         Gn = 0;
     }
+
     double Bn = 0.0557 * first / 100 - 0.2040 * second / 100 + 1.0570 * third / 100;
     Bn = FRGB(Bn);
     if (Bn > 1)
     {
         Bn = 1;
     }
+
     if (Bn < 0)
     {
         Bn = 0;
     }
 
-    return RGB(nullptr, Rn * 255, Gn * 255, Bn * 255);
+    return RGB(nullptr, round(Rn * 255), round(Gn * 255), round(Bn * 255));
 }
 
 CMYK XYZ::toCMYK()const
@@ -447,22 +438,6 @@ HSL XYZ::toHSL()const
 {
 
     return toRGB().toHSL();
-}
-
-void XYZ::chekcUndo()
-{
-    if (0. > first || 95.047 < first)
-    {
-        //f->undo();
-    }
-    else if (0. > second || 100. < second)
-    {
-        //s->undo();
-    }
-    else if (0. > third || 108.883 < third)
-    {
-        //t->undo();
-    }
 }
 
 XYZ::~XYZ() {}
@@ -541,25 +516,7 @@ HSL Lab::toHSL()const
     return toXYZ().toHSL();
 }
 
-
-
 Lab::~Lab() {};
-
-void Lab::chekcUndo()
-{
-    if (0. > first || 100. < first)
-    {
-        //f->undo();
-    }
-    else if (-128. > second || 128. < second)
-    {
-        //s->undo();
-    }
-    else if (-128. > third || 128. < third)
-    {
-        //t->undo();
-    }
-}
 
 HSV::HSV(QWidget* parent, double hue, double s, double v) :
     BasicColor(parent, hue, s, v)
@@ -630,14 +587,14 @@ RGB HSV::toRGB()const
         G = 0.;
         B = c;
     }
-    else if (first >= 300 && first < 360)
+    else
     {
         R = c;
         G = 0.;
         B = x;
     }
 
-    return RGB(nullptr, (R + m) * 255, (G + m) * 255, (B + m) * 255);
+    return RGB(nullptr, round((R + m) * 255), round((G + m) * 255), round((B + m) * 255));
 }
 
 CMYK HSV::toCMYK()const
@@ -657,27 +614,10 @@ Lab HSV::toLab()const
 
 HSL HSV::toHSL()const
 {
-
     return toRGB().toHSL();
 }
 
 HSV::~HSV() {}
-
-void HSV::chekcUndo()
-{
-    if (0. > first || 360 <= first)
-    {
-        //f->undo();
-    }
-    else if (0. > second || 100. < second)
-    {
-        //s->undo();
-    }
-    else if (0. > third || 100. < third)
-    {
-        //t->undo();
-    }
-}
 
 HSL::HSL(QWidget* parent, double h, double s, double l) :
     BasicColor(parent, h, s, l)
@@ -748,14 +688,14 @@ RGB HSL::toRGB()const
         G = 0.;
         B = c;
     }
-    else if (first >= 300 && first < 360)
+    else
     {
         R = c;
         G = 0.;
         B = x;
     }
 
-    return RGB(nullptr, (R + m) * 255, (G + m) * 255, (B + m) * 255);
+    return RGB(nullptr, round((R + m) * 255), round((G + m) * 255), round((B + m) * 255));
 }
 
 CMYK HSL::toCMYK()const
@@ -775,24 +715,7 @@ Lab HSL::toLab()const
 
 HSV HSL::toHSV()const
 {
-
     return toRGB().toHSV();
-}
-
-void HSL::chekcUndo()
-{
-    if (0. > first || 360 <= first)
-    {
-        //f->undo();
-    }
-    else if (0. > second || 100. < second)
-    {
-        //s->undo();
-    }
-    else if (0. > third || 100. < third)
-    {
-        //t->undo();
-    }
 }
 
 HSL::~HSL() {}

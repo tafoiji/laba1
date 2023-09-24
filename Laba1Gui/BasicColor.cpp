@@ -68,7 +68,6 @@ BasicColor& BasicColor::operator=(const BasicColor& op)
 
 void BasicColor::editedS(double)
 {
-    bool ok;
     double temp = s->value();
     if (temp == second)
     {
@@ -81,14 +80,11 @@ void BasicColor::editedS(double)
 
 void BasicColor::editedT(double)
 {
-    bool ok;
     double temp = t->value();
     if (temp == third)
     {
         return;
     }
-
-
 
     third = temp;
     emit edited();
@@ -96,7 +92,6 @@ void BasicColor::editedT(double)
 
 void BasicColor::editedF(double)
 {
-    bool ok;
     double temp = f->value();
     if (f->value() == first)
     {

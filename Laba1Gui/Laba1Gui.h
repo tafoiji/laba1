@@ -38,7 +38,7 @@ private:
     HSV* hsv;
     HSL* hsl;
 protected:
-    void paintEvent(QPaintEvent* e)override;
+    virtual void paintEvent(QPaintEvent* e)override;
 public slots:
     void openColorDialog();
     void changeNow();
