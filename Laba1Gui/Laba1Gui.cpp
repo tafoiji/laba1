@@ -39,7 +39,7 @@ Laba1Gui::Laba1Gui(QWidget* parent)
     layout->addWidget(hex);
 
     this->setCentralWidget(mainWidget);
-    std::ifstream variants("C:\\pkg\\laba1\\Laba1Gui\\variants.txt");
+    std::ifstream variants("variants.txt");
     std::string var;
     comboBox = new QComboBox;
     while (getline(variants, var))
