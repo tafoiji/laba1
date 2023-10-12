@@ -26,6 +26,10 @@ RGB::RGB(QWidget* parent, int red, int green, int blue) :
     this->f->setMaximum(255);
     this->s->setMaximum(255);
     this->t->setMaximum(255);
+
+    this->fSlider->setRange(0, 255);
+    this->sSlider->setRange(0, 255);
+    this->tSlider->setRange(0, 255);
 }
 
 RGB::RGB(const RGB& op)
@@ -214,10 +218,15 @@ CMYK::CMYK(QWidget* parent, double cyan, double magenta,
     k->blockSignals(true);
     k->setValue(key);
     k->blockSignals(false);
+    kSlider = new QSlider(Qt::Orientation::Horizontal, this);
+    kSlider->blockSignals(true);
+    kSlider->setValue(key);
+    kSlider->blockSignals(false);
     QHBoxLayout* kLayout = new QHBoxLayout(this);
     kLayout->addWidget(kLabel);
     kLayout->addWidget(k);
     layout->addLayout(kLayout);
+    layout->addWidget(kSlider);
 
     this->f->setMinimum(0);
     this->s->setMinimum(0);
@@ -228,7 +237,13 @@ CMYK::CMYK(QWidget* parent, double cyan, double magenta,
     this->k->setMinimum(0);
     this->k->setMaximum(100);
 
+    this->fSlider->setRange(0, 100);
+    this->sSlider->setRange(0, 100);
+    this->tSlider->setRange(0, 100);
+    this->kSlider->setRange(0, 100);
+
     connect(k, SIGNAL(valueChanged(double)), this, SLOT(editedK(double)));
+    connect(kSlider, SIGNAL(valueChanged(int)), this, SLOT(editedKS(int)));
     //connect(k, &QDoubleSpinBox::valueChanged, this, &CMYK::editedK);
 }
 
@@ -299,6 +314,9 @@ CMYK& CMYK::operator= (const CMYK& op)
     (BasicColor&)*this = (const BasicColor&)op;
     key = op.key;
     kLabel = op.kLabel;
+    kSlider->blockSignals(true);
+    kSlider->setValue(op.key);
+    kSlider->blockSignals(false);
     k->blockSignals(true);
     k->setValue(op.key);
     k->blockSignals(false);
@@ -315,6 +333,24 @@ void CMYK::editedK(double)
     }
 
     key = temp;
+    kSlider->blockSignals(true);
+    kSlider->setValue(key);
+    kSlider->blockSignals(false);
+    emit edited();
+}
+
+void CMYK::editedKS(int)
+{
+    int temp = kSlider->value();
+    if (temp==key)
+    {
+        return;
+    }
+
+    key = temp;
+    k->blockSignals(true);
+    k->setValue(key);
+    k->blockSignals(false);
     emit edited();
 }
 
@@ -333,6 +369,10 @@ XYZ::XYZ(QWidget* parent, double x, double y, double z) :
     this->f->setMaximum(95.047);
     this->s->setMaximum(100);
     this->t->setMaximum(108.883);
+
+    this->fSlider->setRange(0, 95);
+    this->sSlider->setRange(0, 100);
+    this->tSlider->setRange(0, 108);
 }
 
 XYZ::XYZ(const XYZ& op)
@@ -455,6 +495,10 @@ Lab::Lab(QWidget* parent, double L, double a, double b) :
     this->f->setMaximum(100);
     this->s->setMaximum(128);
     this->t->setMaximum(128);
+
+    this->fSlider->setRange(0, 100);
+    this->sSlider->setRange(-128, 128);
+    this->tSlider->setRange(-128, 128);
 }
 
 Lab::Lab(const Lab& op)
@@ -531,6 +575,10 @@ HSV::HSV(QWidget* parent, double hue, double s, double v) :
     this->f->setMaximum(359.99);
     this->s->setMaximum(100);
     this->t->setMaximum(100);
+
+    this->fSlider->setRange(0, 359);
+    this->sSlider->setRange(0, 100);
+    this->tSlider->setRange(0, 100);
 }
 
 HSV::HSV(const HSV& op)
@@ -626,12 +674,13 @@ HSL::HSL(QWidget* parent, double h, double s, double l) :
     this->sLabel->setText("S: ");
     this->tLabel->setText("L: ");
 
-    this->f->setMinimum(0);
-    this->s->setMinimum(0);
-    this->t->setMinimum(0);
-    this->f->setMaximum(359.99);
-    this->s->setMaximum(100);
-    this->t->setMaximum(100);
+    this->f->setRange(0, 359);
+    this->s->setRange(0, 100);
+    this->t->setRange(0, 100);
+
+    this->fSlider->setRange(0, 359);
+    this->sSlider->setRange(0, 100);
+    this->tSlider->setRange(0, 100);
 }
 
 HSL::HSL(const HSL& op)

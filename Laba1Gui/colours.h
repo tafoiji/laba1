@@ -49,6 +49,7 @@ private:
     friend class Hex;
     double key;
     QDoubleSpinBox* k;
+    QSlider* kSlider;
     QLabel* kLabel;
 public:
     CMYK(QWidget* parent, double cyan = 0, double magenta = 0,
@@ -69,6 +70,7 @@ public:
     ~CMYK();
 
 public slots:
+    void editedKS(int);
     void editedK(double);
 };
 

@@ -6,7 +6,7 @@ Laba1Gui::Laba1Gui(QWidget* parent)
 {
     ui->setupUi(this);
 
-    this->setFixedSize(720, 440);
+    this->setFixedSize(720, 480);
 
     QWidget* mainWidget = new QWidget;
     layout = new QVBoxLayout(mainWidget);
@@ -69,7 +69,7 @@ void Laba1Gui::paintEvent(QPaintEvent* e)
     paint.setBrush(brush);
     paint.setPen(pen);
 
-    paint.drawRect(QRect(QPoint(this->width() * 0.6, 0.1 * this->height()), QPoint(this->width() * 0.95, 0.45 * this->height())));
+    paint.drawRect(QRect(QPoint(this->width() * 0.6, 0.05 * this->height()), QPoint(this->width() * 0.95, 0.4 * this->height())));
     paint.end();
 }
 

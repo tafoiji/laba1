@@ -7,6 +7,8 @@
 #include <QLineEdit>
 #include <QLabel>
 #include "QDoubleSpinBox"
+#include <QSlider>
+#include <QDebug>
 
 class BasicColor : public QWidget
 {
@@ -27,6 +29,9 @@ protected:
     QDoubleSpinBox* f;
     QDoubleSpinBox* s;
     QDoubleSpinBox* t;
+    QSlider* fSlider;
+    QSlider* sSlider;
+    QSlider* tSlider;
     QLabel* fLabel;
     QLabel* sLabel;
     QLabel* tLabel;
@@ -40,6 +45,10 @@ public slots:
     void editedF(double);
     void editedS(double);
     void editedT(double);
+
+    void editedFS(int);
+    void editedSS(int);
+    void editedTS(int);
 signals:
     void edited();
 };

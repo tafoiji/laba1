@@ -21,6 +21,9 @@ void Hex::toRGB(RGB* rgb)
     rgb->f->setValue(rgb->first);
     rgb->s->setValue(rgb->second);
     rgb->t->setValue(rgb->third);
+    rgb->fSlider->setValue(rgb->first);
+    rgb->sSlider->setValue(rgb->second);
+    rgb->tSlider->setValue(rgb->third);
     rgb->blockSignals(false);
 }
 
@@ -57,10 +60,17 @@ void Hex::toCMYK(CMYK* cmyk)
     cmyk->f->setValue(cmyk->first);
     cmyk->s->setValue(cmyk->second);
     cmyk->t->setValue(cmyk->third);
+    cmyk->fSlider->setValue(cmyk->first);
+    cmyk->sSlider->setValue(cmyk->second);
+    cmyk->tSlider->setValue(cmyk->third);
     cmyk->blockSignals(false);
     cmyk->k->blockSignals(true);
     cmyk->k->setValue(cmyk->key);
     cmyk->k->blockSignals(false);
+    cmyk->kSlider->blockSignals(true);
+    cmyk->kSlider->setValue(cmyk->key);
+    cmyk->kSlider->blockSignals(false);
+
 }
 
 void Hex::toXYZ(XYZ* xyz)
